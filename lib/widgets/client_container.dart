@@ -1,9 +1,10 @@
+import 'package:admin_console/core/app_imports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-class CustomContainer extends StatelessWidget {
-  const CustomContainer({
+class ClientContainer extends StatelessWidget {
+  const ClientContainer({
     super.key,
     required this.name,
     required this.id,
@@ -14,14 +15,17 @@ class CustomContainer extends StatelessWidget {
   final String name;
   final String id;
   final String mobileNo;
-  final VoidCallback onEdit; // Callback for edit
+  final VoidCallback onEdit; 
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        //GoRouter.of(context).go('/clients/$id');
+        print('ontap');
+        print('Id - $id');
+        GoRouter.of(context).go('/clients/$id');
+        print('AFter');
       },
       child: Padding(
         padding: const EdgeInsets.only(right: 0),
@@ -55,7 +59,7 @@ class CustomContainer extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SvgPicture.asset(
-                    'assets/icons/user1.svg',
+                    'assets/icons/client.svg',
                     height: 40,
                     width: 40,
                     // color: const Color.fromRGBO(229, 138, 0, 1),
@@ -64,6 +68,7 @@ class CustomContainer extends StatelessWidget {
                     padding: const EdgeInsets.all(0),
                     tooltip: '',
                     color: Colors.white,
+                   
                     constraints: const BoxConstraints(
                       minWidth: 160,
                     ),
@@ -110,6 +115,7 @@ class CustomContainer extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
                       Text(
