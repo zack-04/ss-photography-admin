@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:admin_console/constants.dart';
 import 'package:admin_console/features/models/client_list_model.dart';
 import 'package:admin_console/widgets/client_container.dart';
@@ -55,13 +54,44 @@ class _ClientScreenState extends State<ClientScreen> {
     } catch (e) {
       print('Error = $e');
     }
-    // finally {
-    //   if (mounted) {
-    //     setState(() {
-    //       isLoading = false;
-    //     });
-    //   }
-    // }
+  }
+
+  Future<void> clientEdit(String clientId, String name, String mobile) async {
+    const url = 'https://photo.sortbe.com/Client-Edit';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          'name': name,
+          'mobile': mobile,
+          'enc': encKey,
+          'client_id': clientId,
+        },
+      );
+
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+      print('Response - $responseData');
+      if (responseData['status'] == 'Success') {
+        await clientsList();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Client Updated Successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${responseData['remarks']}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error = $e');
+    }
   }
 
   void _showAddClientDialog() {
@@ -296,10 +326,19 @@ class _ClientScreenState extends State<ClientScreen> {
     );
   }
 
-  void _editClientDetails() {
-    final TextEditingController nameController = TextEditingController();
-    final TextEditingController addressController = TextEditingController();
-    final TextEditingController mobileController = TextEditingController();
+  void _editClientDetails(
+    String clientId,
+    String currentName,
+    String currentMobile,
+    // String currentAddress
+  ) {
+    final TextEditingController nameController =
+        TextEditingController(text: currentName);
+    final TextEditingController mobileController =
+        TextEditingController(text: currentMobile);
+    final TextEditingController addressController =
+        TextEditingController(); // Not functional yet
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -317,26 +356,54 @@ class _ClientScreenState extends State<ClientScreen> {
           content: SizedBox(
             height: 420,
             width: 450,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 20),
-                CustomTextfield(
-                  controller: nameController,
-                  text: 'Enter Client Name',
-                ),
-                const SizedBox(height: 30),
-                CustomTextfield(
-                  controller: mobileController,
-                  text: 'Enter Mobile Number',
-                ),
-                const SizedBox(height: 30),
-                CustomTextfield(
-                  controller: addressController,
-                  maxLines: 4,
-                  text: 'Enter Address',
-                ),
-              ],
+            child: Form(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: nameController,
+                    text: 'Enter Client Name',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your Name';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: mobileController,
+                    text: 'Enter Mobile Number',
+                    inputFormatter: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
+                    ],
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your mobile number';
+                      }
+                      if (value.length != 10) {
+                        return 'Mobile number must be 10 digits';
+                      }
+                      final RegExp regex = RegExp(r'^\d{10}$');
+                      if (!regex.hasMatch(value)) {
+                        return 'Enter valid mobile number';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20),
+                  CustomTextfield(
+                    controller: addressController,
+                    text:
+                        'Enter Address', // For now, this is just a placeholder
+                    maxLines: 4,
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -363,13 +430,17 @@ class _ClientScreenState extends State<ClientScreen> {
               width: 100,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (formKey.currentState!.validate()) {
+                    clientEdit(
+                        clientId, nameController.text, mobileController.text);
+                    Navigator.of(context).pop();
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(
-                  'Edit',
+                  'Update',
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -501,7 +572,13 @@ class _ClientScreenState extends State<ClientScreen> {
                           id: clientListResponse!.data[index].clientId,
                           mobileNo:
                               clientListResponse!.data[index].mobileNumber,
-                          onEdit: _editClientDetails,
+                          onEdit: () {
+                            _editClientDetails(
+                              clientListResponse!.data[index].clientId,
+                              clientListResponse!.data[index].clientName,
+                              clientListResponse!.data[index].mobileNumber,
+                            );
+                          },
                           onDelete: () {
                             _showDeleteDialog(context);
                           },
