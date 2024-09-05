@@ -41,6 +41,7 @@ class FilesContainer extends StatelessWidget {
                   PopupMenuButton<String>(
                     padding: const EdgeInsets.all(0),
                     tooltip: '',
+                    color: Colors.white,
                     constraints: const BoxConstraints(
                       minWidth: 160,
                     ),
@@ -74,7 +75,7 @@ class FilesContainer extends StatelessWidget {
                 ],
               ),
               const Spacer(),
-              Image.asset('icons/albums.png'),
+              Image.asset('assets/icons/albums.png'),
               const Spacer(),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +102,7 @@ class FilesContainer extends StatelessWidget {
                     ],
                   ),
                   Image.asset(
-                    'icons/client.png',
+                    'assets/icons/client.png',
                     height: 40,
                     width: 40,
                     // color: const Color.fromRGBO(229, 138, 0, 1),
