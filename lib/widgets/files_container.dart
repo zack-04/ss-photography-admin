@@ -1,118 +1,133 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:toastification/toastification.dart';
 
 class FilesContainer extends StatelessWidget {
   const FilesContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 15),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        height: 200,
-        width: 250,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: const Color(0xFFe7eaee),
-            width: 1,
-          ),
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(27, 46, 94, 0.08),
-              offset: Offset(0, 8),
-              blurRadius: 24,
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: const Color(0xFFe7eaee),
+              width: 1,
             ),
-          ],
-        ),
-        child: Center(
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromRGBO(27, 46, 94, 0.08),
+                offset: Offset(0, 8),
+                blurRadius: 24,
+              ),
+            ],
+          ),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Radio(
-                    value: 'value',
-                    groupValue: 'groupValue',
-                    onChanged: (value) {},
+              Container(
+                height: 200,
+                width: double.infinity,
+                padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
+                decoration: BoxDecoration(
+                  //color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(10),
                   ),
-                  PopupMenuButton<String>(
-                    padding: const EdgeInsets.all(0),
-                    tooltip: '',
-                    color: Colors.white,
-                    constraints: const BoxConstraints(
-                      minWidth: 160,
-                    ),
-                    onSelected: (String value) {
-                      // Handle the menu selection
-                      switch (value) {
-                        case 'Edit':
-                          // Handle Edit action
-                          break;
-                        case 'Delete':
-                          // Handle Delete action
-                          break;
-                      }
-                    },
-                    icon: const Icon(
-                      Icons.more_vert,
-                      size: 20,
-                      color: Colors.grey,
-                    ),
-                    itemBuilder: (BuildContext context) => [
-                      const PopupMenuItem<String>(
-                        value: 'Edit',
-                        child: Text('Edit'),
-                      ),
-                      const PopupMenuItem<String>(
-                        value: 'Delete',
-                        child: Text('Delete'),
-                      ),
-                    ],
+                  child: Image.asset(
+                    'assets/images/demo.jpg',
+                    fit: BoxFit.fill,
+                    height: 200,
+                    width: double.infinity,
                   ),
-                ],
+                ),
               ),
-              const Spacer(),
-              Image.asset('assets/icons/albums.png'),
-              const Spacer(),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              // const SizedBox(height: 10),
+              Container(
+                height: 1,
+                width: double.infinity,
+                color: Colors.grey.shade400,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 30, right: 20, top: 0),
+                child: SizedBox(
+                  //color: Colors.amber,
+                  height: 50,
+                  width: double.infinity,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Document-final',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                      Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 170,
+                        ),
+                        child: const Text(
+                          'Document-final',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 3),
-                      Text(
-                        '16 Nov 2022',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
+                      const SizedBox(height: 3),
+                      PopupMenuButton<String>(
+                        padding: const EdgeInsets.all(0),
+                        tooltip: '',
+                        color: Colors.white,
+                        constraints: const BoxConstraints(
+                          minWidth: 130,
                         ),
-                      ),
+                        onSelected: (String value) {
+                          // Handle the menu selection
+                          switch (value) {
+                            case 'Edit':
+                              // Handle Edit action
+                              break;
+                            case 'Delete':
+                              // Handle Delete action
+                              break;
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.more_vert,
+                          size: 20,
+                          color: Colors.grey,
+                        ),
+                        itemBuilder: (BuildContext context) => [
+                          const PopupMenuItem<String>(
+                            value: 'Edit',
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'Delete',
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      )
                     ],
                   ),
-                  Image.asset(
-                    'assets/icons/client.png',
-                    height: 40,
-                    width: 40,
-                    // color: const Color.fromRGBO(229, 138, 0, 1),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
         ),
-      ),
+        Positioned(
+          left: 5,
+          top: 5,
+          child: Radio(
+            activeColor: Colors.red,
+            value: 'value',
+            groupValue: 'groupValue',
+            onChanged: (value) {},
+          ),
+        ),
+      ],
     );
   }
 }

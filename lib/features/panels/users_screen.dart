@@ -77,6 +77,7 @@ class _UsersScreenState extends State<UsersScreen> {
             'mobile': mobileController.text,
             'password': passwordController.text,
             'role': 'Admin',
+            'enc': encKey,
           },
         );
 
@@ -206,7 +207,7 @@ class _UsersScreenState extends State<UsersScreen> {
             ),
             SizedBox(
               height: 40,
-             // width: 130,
+              // width: 130,
               child: ElevatedButton(
                 onPressed: () async {
                   if (!formKey.currentState!.validate()) {

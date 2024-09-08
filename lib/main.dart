@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: goRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -38,7 +40,7 @@ final goRouter = GoRouter(
       builder: (context, state, navigationShell) {
         return ScaffoldWithSidebar(
           showSidebar: state.uri.toString() != '/login',
-          child: navigationShell, 
+          child: navigationShell,
         );
       },
       branches: [
