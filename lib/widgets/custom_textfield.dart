@@ -12,6 +12,7 @@ class CustomTextfield extends StatelessWidget {
     this.validator,
     this.inputFormatter,
     this.autovalidateMode,
+    this.suffixIcon,
   });
   final TextEditingController controller;
   final int? maxLines;
@@ -20,6 +21,7 @@ class CustomTextfield extends StatelessWidget {
   final String? Function(String?)? validator;
   final List<TextInputFormatter>? inputFormatter;
   final AutovalidateMode? autovalidateMode;
+  final Widget? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +52,7 @@ class CustomTextfield extends StatelessWidget {
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: Color(0xFFD4D4D4), width: 1.5),
         ),
+        suffixIcon: suffixIcon,
       ),
     );
   }
