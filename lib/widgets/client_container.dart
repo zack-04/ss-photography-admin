@@ -11,10 +11,12 @@ class ClientContainer extends StatelessWidget {
     required this.mobileNo,
     required this.onEdit,
     required this.onDelete,
+    required this.imageFileName,
   });
   final String name;
   final String id;
   final String mobileNo;
+  final String imageFileName;
   final VoidCallback onEdit; 
   final VoidCallback onDelete;
 
@@ -58,17 +60,32 @@ class ClientContainer extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SvgPicture.asset(
+                  imageFileName.isNotEmpty
+                      ? Image.network(
+                    'https://photo.sortbe.com/uploads/$imageFileName',
+                    height: 40,
+                    width: 40,
+                    errorBuilder: (context, error, stackTrace) {
+                      // Fallback to default SVG if network image fails
+                      return SvgPicture.asset(
+                        'assets/icons/client.svg',
+                        height: 40,
+                        width: 40,
+                      );
+                    },
+                  )
+                      : SvgPicture.asset(
                     'assets/icons/client.svg',
                     height: 40,
                     width: 40,
-                    // color: const Color.fromRGBO(229, 138, 0, 1),
                   ),
+
+
                   PopupMenuButton<String>(
                     padding: const EdgeInsets.all(0),
                     tooltip: '',
                     color: Colors.white,
-                   
+
                     constraints: const BoxConstraints(
                       minWidth: 160,
                     ),
