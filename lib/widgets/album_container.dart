@@ -1,18 +1,63 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+
+import '../constants.dart';
+
+
 
 class AlbumContainer extends StatelessWidget {
   const AlbumContainer({
     super.key,
     required this.name,
     required this.albumId,
-    required this.clientId, required this.onEdit,
+    required this.clientId,
+    required this.onEdit,
   });
+
   final String name;
   final String albumId;
   final String clientId;
-  final VoidCallback onEdit; 
+  final VoidCallback onEdit;
+
+
+  Future<void> generateLink(
+      BuildContext context, String enc, String albumId) async {
+    final url = Uri.parse('https://photo.sortbe.com/Link-Trigger');
+
+    try {
+      final response = await http.post(
+        url,
+        body: {
+          'enc': encKey,
+          'album_id': albumId, // Pass the albumId from the backend
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final otp = data['otp'].toString(); // Get the OTP from backend response
+
+        print('Generated OTP: $otp for albumId: $albumId');
+
+        // Pass the OTP and albumId to OTP verification screen
+        GoRouter.of(context).go(
+          '/otp_verification',
+          extra: {
+            'enc': enc,
+            'albumId': albumId,
+            'otp': otp, // Pass the correct OTP
+          },
+        );
+      } else {
+        print('Failed to generate link. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +126,16 @@ class AlbumContainer extends StatelessWidget {
                     minWidth: 160,
                   ),
                   onSelected: (String value) {
-                    // Handle the menu selection
                     switch (value) {
                       case 'Edit':
-                        // Handle Edit action
-                       onEdit();
-                          break;
+                        onEdit();
+                        break;
                       case 'Delete':
                         // Handle Delete action
+                        break;
+                      case 'GenLink':
+                        generateLink(context, encKey,
+                            albumId); // Generates link and navigates to OTP page
                         break;
                     }
                   },
@@ -105,6 +152,10 @@ class AlbumContainer extends StatelessWidget {
                     const PopupMenuItem<String>(
                       value: 'Delete',
                       child: Text('Delete'),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'GenLink',
+                      child: Text('Generate Link'),
                     ),
                   ],
                 ),

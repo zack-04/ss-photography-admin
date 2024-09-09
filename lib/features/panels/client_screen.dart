@@ -128,33 +128,45 @@ class _ClientScreenState extends State<ClientScreen> {
       const url = 'https://photo.sortbe.com/Client-Creation';
 
       try {
-        final response = await http.post(
-          Uri.parse(url),
-          body: {
-            'name': nameController.text,
-            'mobile': mobileController.text,
-            'enc': encKey,
-          },
-        );
+        var request = http.MultipartRequest('POST', Uri.parse(url));
+        request.fields['name'] = nameController.text;
+        request.fields['mobile'] = mobileController.text;
+        request.fields['enc'] = encKey;
 
-        Map<String, dynamic> responseData = jsonDecode(response.body);
-        print('Response - $responseData');
-        if (responseData['status'] == 'Success') {
-          await clientsList();
-          GoRouter.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Client Created Successfully'),
-              backgroundColor: Colors.green,
-            ),
+        // Attach the image if it's selected
+        if (capturedImage != null) {
+          var imageFile = await http.MultipartFile.fromPath(
+            'client_img', // field name as per the backend
+            capturedImage!.path,
           );
+          request.files.add(imageFile);
+        }
+
+        // Send the multipart request
+        var response = await request.send();
+
+        if (response.statusCode == 200) {
+          var responseData = jsonDecode(await response.stream.bytesToString());
+          print('Response - $responseData');
+          if (responseData['status'] == 'Success') {
+            await clientsList();
+            GoRouter.of(context).pop();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Client Created Successfully'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${responseData['remarks']}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${responseData['remarks']}'),
-              backgroundColor: Colors.red,
-            ),
-          );
+          throw Exception('Failed to create client');
         }
       } catch (e) {
         print('Error = $e');
@@ -250,27 +262,27 @@ class _ClientScreenState extends State<ClientScreen> {
                             borderRadius: BorderRadius.circular(5),
                             image: capturedImage != null
                                 ? DecorationImage(
-                                    image: FileImage(capturedImage!),
-                                    fit: BoxFit.contain,
-                                  )
+                              image: FileImage(capturedImage!),
+                              fit: BoxFit.contain,
+                            )
                                 : null,
                           ),
                           child: capturedImage == null
                               ? Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/icons/gallery.png'),
-                                    const SizedBox(height: 15),
-                                    Text(
-                                      'Capture Photo',
-                                      style: GoogleFonts.inter(
-                                        fontSize: 15.0,
-                                        color: const Color(0xFF929292),
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset('assets/icons/gallery.png'),
+                              const SizedBox(height: 15),
+                              Text(
+                                'Capture Photo',
+                                style: GoogleFonts.inter(
+                                  fontSize: 15.0,
+                                  color: const Color(0xFF929292),
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          )
                               : const SizedBox(),
                         ),
                       )
@@ -338,6 +350,7 @@ class _ClientScreenState extends State<ClientScreen> {
         TextEditingController(text: currentMobile);
     final TextEditingController addressController =
         TextEditingController(); // Not functional yet
+
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     showDialog(
@@ -525,8 +538,8 @@ class _ClientScreenState extends State<ClientScreen> {
       backgroundColor: Colors.grey.shade100,
       body: clientListResponse == null
           ? const Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
               child: Column(
@@ -586,9 +599,11 @@ class _ClientScreenState extends State<ClientScreen> {
                       },
                     ),
                   ),
-                ],
-              ),
-            ),
+                
+      
+          ],
+        ),
+      ),
     );
   }
 }

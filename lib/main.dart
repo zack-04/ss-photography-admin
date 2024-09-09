@@ -6,6 +6,8 @@ import 'package:admin_console/features/panels/users_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'features/web/otp_verification.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -34,6 +36,21 @@ final goRouter = GoRouter(
         child: LoginScreen(),
       ),
     ),
+
+    GoRoute(
+      path: '/otp_verification',
+      builder: (context, state) {
+        final params = state.extra as Map<String, dynamic>;
+        return OtpVerification(
+          enc: params['enc'],
+          albumId: params['albumId'],
+          otp: params['otp'],
+        );
+      },
+    ),
+
+
+
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return ScaffoldWithSidebar(
