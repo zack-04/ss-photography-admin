@@ -339,17 +339,18 @@ class _ClientScreenState extends State<ClientScreen> {
   }
 
   void _editClientDetails(
-      String clientId,
-      String currentName,
-      String currentMobile,
-      // String currentAddress
-      ) {
+    String clientId,
+    String currentName,
+    String currentMobile,
+    // String currentAddress
+  ) {
     final TextEditingController nameController =
-    TextEditingController(text: currentName);
+        TextEditingController(text: currentName);
     final TextEditingController mobileController =
-    TextEditingController(text: currentMobile);
+        TextEditingController(text: currentMobile);
     final TextEditingController addressController =
-    TextEditingController(); // Not functional yet
+        TextEditingController(); // Not functional yet
+
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
     showDialog(
@@ -411,7 +412,7 @@ class _ClientScreenState extends State<ClientScreen> {
                   CustomTextfield(
                     controller: addressController,
                     text:
-                    'Enter Address', // For now, this is just a placeholder
+                        'Enter Address', // For now, this is just a placeholder
                     maxLines: 4,
                   ),
                 ],
@@ -540,65 +541,66 @@ class _ClientScreenState extends State<ClientScreen> {
         child: CircularProgressIndicator(),
       )
           : Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Client List',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 50),
-            ElevatedButton(
-              onPressed: _showAddClientDialog,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'Add Client',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const SizedBox(height: 25),
-            Expanded(
-              child: GridView.builder(
-                itemCount: clientListResponse!.data.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: crossAxisCount == 3 ? 40 : 20.0,
-                  mainAxisSpacing: 20.0,
-                  childAspectRatio: 1.7,
-                ),
-                itemBuilder: (context, index) {
-                  return ClientContainer(
-                    name: clientListResponse!.data[index].clientName,
-                    id: clientListResponse!.data[index].clientId,
-                    mobileNo:
-                    clientListResponse!.data[index].mobileNumber,
-                    imageFileName: '',
-                    onEdit: () {
-                      _editClientDetails(
-                        clientListResponse!.data[index].clientId,
-                        clientListResponse!.data[index].clientName,
-                        clientListResponse!.data[index].mobileNumber,
-                      );
-                    },
-                    onDelete: () {
-                      _showDeleteDialog(context);
-                    },
-                  );
-                },
-              ),
-            ),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Client List',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 50),
+                  ElevatedButton(
+                    onPressed: _showAddClientDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      'Add Client',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount: clientListResponse!.data.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        crossAxisSpacing: crossAxisCount == 3 ? 40 : 20.0,
+                        mainAxisSpacing: 20.0,
+                        childAspectRatio: 1.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ClientContainer(
+                          name: clientListResponse!.data[index].clientName,
+                          id: clientListResponse!.data[index].clientId,
+                          mobileNo:
+                              clientListResponse!.data[index].mobileNumber,
+                          onEdit: () {
+                            _editClientDetails(
+                              clientListResponse!.data[index].clientId,
+                              clientListResponse!.data[index].clientName,
+                              clientListResponse!.data[index].mobileNumber,
+                            );
+                          },
+                          onDelete: () {
+                            _showDeleteDialog(context);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                
+      
           ],
         ),
       ),

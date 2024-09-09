@@ -21,6 +21,7 @@ class AppIcons {
   static const String mobile = "assets/icons/mobile.png";
   static const String direction = "assets/icons/direction.png";
   static const String airconditioning = "assets/icons/airconditioning.png";
+  static const String mobileIconLogin = "assets/icons/mobile_icon_login.png";
 
 
 
